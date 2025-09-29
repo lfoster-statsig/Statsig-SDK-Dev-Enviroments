@@ -5,11 +5,19 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: "../.env" });
 
-const myStatsigClient = new StatsigClient(
+// const myStatsigClient = new StatsigClient(
+//   process.env.CLIENT_KEY,
+//   { userID: "user-id" },
+//   {
+//     plugins: [new StatsigSessionReplayPlugin(), new StatsigAutoCapturePlugin()],
+//   }
+// );
+
+var myStatsigClient = new StatsigClient(
   process.env.CLIENT_KEY,
   { userID: "user-id" },
   {
-    plugins: [new StatsigSessionReplayPlugin(), new StatsigAutoCapturePlugin()],
+    networkConfig: { initializeHashAlgorithm: "none" },
   }
 );
 

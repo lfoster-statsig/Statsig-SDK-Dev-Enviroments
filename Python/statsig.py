@@ -15,7 +15,18 @@ load_dotenv()  # Loads variables from .env into environment
 statsig = Statsig(os.getenv("SERVER_KEY"), options)
 statsig.initialize().wait()
 
-gatePass = statsig.check_gate(statsigUser, "new_feature_gate")
+# test = statsig.getInstance()._options.enviroment
+
+# print(test)
+
+# feature_gate = statsig.get_feature_gate(statsigUser, "test_gate").get_evaluation_details()
+gate = statsig.get_feature_gate(statsigUser, "test_gate")
+print(gate.details.reason)
+# print(feature_gate)
+
+# print(f"Feature Gate: {feature_gate}")
+
+gatePass = statsig.check_gate(statsigUser, "test_gate")
 if(gatePass):
     print("The new feature is enabled!")
 else:

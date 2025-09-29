@@ -5,5 +5,6 @@ edition = "2024"
 
 [dependencies]
 dotenv = "0.15.0"
+serde_json = "1.0.143"
 statsig-rust = "0.8.5"
 tokio = "1.47.1"

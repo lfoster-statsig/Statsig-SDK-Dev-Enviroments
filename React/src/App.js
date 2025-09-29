@@ -31,8 +31,11 @@ function App() {
   return (
     <StatsigProvider
       sdkKey={process.env.REACT_APP_CLIENT_KEY}
-      user={{ userID: "loganfoster" }}
-      options={{ environment: { tier: "development" } }}
+      options={{
+        networkConfig: { initializeHashAlgorithm: "none" },
+        environment: { tier: "development" },
+        timeoutMS: 10000,
+      }}
     >
       <AppContent />
     </StatsigProvider>
