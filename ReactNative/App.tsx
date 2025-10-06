@@ -1,51 +1,37 @@
+import {
+  StatsigProviderRN,
+  useFeatureGate,
+} from "@statsig/react-native-bindings";
 import { StyleSheet, Text, View } from "react-native";
 
-import { StatsigProviderRN } from "@statsig/react-native-bindings/src/StatsigProviderRN";
-import { StatusBar } from "expo-status-bar";
-import { useStatsigClient } from "@statsig/react-native-bindings";
+function Content() {
+  const gate = useFeatureGate("new_feature_gate");
+
+  // Reason: Network or NetworkNotModified
+  return (
+    <View style={styles.container}>
+      <Text>Value: {gate.value ? "Pass" : "Fail"}!</Text>
+      <Text>Reason: {gate.details.reason}</Text>
+    </View>
+  );
+}
 
 export default function App() {
   return (
     <StatsigProviderRN
-      sdkKey={process.env.EXPO_PUBLIC_APP_CLIENT_KEY}
-      user={{ userID: "mobile-user" }}
-      loadingComponent={<Text>Statsig loading</Text>}
+      sdkKey={"client-xgwG1zbGEfD9ap4ZIh3mDaXOWgyvZL0NfFfkFIAENvb"}
+      user={{ userID: "loganfoster" }}
+      loadingComponent={
+        <View style={styles.container}>
+          <Text>Loading...</Text>
+        </View>
+      }
       options={{
         environment: { tier: "development" },
-        // timeoutMs: 10000,
-        networkConfig: {
-          networkTimeoutMs: 5000,
-        },
+        networkConfig: { networkTimeoutMs: 20000 },
       }}
     >
-      <View style={styles.container}>
-        <Text>Hello World!</Text>
-        {(() => {
-          const client = useStatsigClient();
-          return (
-            <>
-              <StatusBar style="auto" />
-              <StatusBar style="auto" />
-              <View className="App">
-                <View className="App-header">
-                  <Text>
-                    Gate is{" "}
-                    {client.checkGate("new_feature_gate")
-                      ? "passing"
-                      : "failing"}
-                    .
-                  </Text>
-                  <Text
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                  />
-                </View>
-              </View>
-            </>
-          );
-        })()}
-      </View>
+      <Content />
     </StatsigProviderRN>
   );
 }
@@ -53,7 +39,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
   },
