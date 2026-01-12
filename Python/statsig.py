@@ -1,7 +1,15 @@
 import os
 import getpass
-from statsig_python_core import Statsig, StatsigOptions, StatsigUser
+from statsig_python_core import Statsig, StatsigUser, StatsigOptions, ExperimentEvaluationOptions, PersistentStorage
 from dotenv import load_dotenv
+
+
+# TODO FIX THIS 
+# options = StatsigOptions(persistent_storage = MyPersistentStorage())
+# statsig = Statsig.initialize(options).wait
+# user = StatsigUser("a-user")
+# exp = statsig.get_experiment(StatsigUser("a-user"), ExperimentEvaluationOptions(user_persisted_values= PersistentStorage.get_user_persisted_value(user, "user_id")))
+# print(f"{exp.group_name}") # control
 
 options = StatsigOptions()
 options.environment = "development"

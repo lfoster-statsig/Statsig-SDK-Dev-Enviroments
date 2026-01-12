@@ -13,7 +13,7 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "deploymentTarget": "18.7",
+      "deploymentTarget": "18.3",
       "supportsTablet": true,
       "bundleIdentifier": "com.anonymous.ReactNative"
     },

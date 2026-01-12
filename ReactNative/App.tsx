@@ -1,45 +1,24 @@
-import {
-  StatsigProviderRN,
-  useFeatureGate,
-} from "@statsig/react-native-bindings";
-import { StyleSheet, Text, View } from "react-native";
+import { StatsigBootstrapProvider } from "@statsig/next";
 
-function Content() {
-  const gate = useFeatureGate("new_feature_gate");
-
-  // Reason: Network or NetworkNotModified
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  const user = {
+    userID: "user-123", // add additional parameters as needed
+  };
   return (
-    <View style={styles.container}>
-      <Text>Value: {gate.value ? "Pass" : "Fail"}!</Text>
-      <Text>Reason: {gate.details.reason}</Text>
-    </View>
+    <html lang="en">
+      <body>
+        <StatsigBootstrapProvider
+          user={user}
+          clientKey={process.env.NEXT_PUBLIC_STATSIG_CLIENT_KEY}
+          serverKey={process.env.STATSIG_SERVER_KEY}
+        >
+          {children}
+        </StatsigBootstrapProvider>
+      </body>
+    </html>
   );
 }
-
-export default function App() {
-  return (
-    <StatsigProviderRN
-      sdkKey={"client-xgwG1zbGEfD9ap4ZIh3mDaXOWgyvZL0NfFfkFIAENvb"}
-      user={{ userID: "loganfoster" }}
-      loadingComponent={
-        <View style={styles.container}>
-          <Text>Loading...</Text>
-        </View>
-      }
-      options={{
-        environment: { tier: "development" },
-        networkConfig: { networkTimeoutMs: 20000 },
-      }}
-    >
-      <Content />
-    </StatsigProviderRN>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

@@ -8,6 +8,7 @@ public class Program
         var options = new StatsigOptionsBuilder()
         .SetSpecsSyncIntervalMs(10000)
         .SetDisableAllLogging(false)
+        
         .Build();
 
         DotNetEnv.Env.Load("../.env"); // Loads variables from .env file in parent directory
