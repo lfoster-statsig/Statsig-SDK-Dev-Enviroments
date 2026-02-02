@@ -13,7 +13,7 @@ dotenv.config({ path: "../.env" });
 //   }
 // );
 
-var myStatsigClient = new StatsigClient(
+var client = new StatsigClient(
   process.env.CLIENT_KEY,
   { userID: "user-id" },
   {
@@ -21,20 +21,31 @@ var myStatsigClient = new StatsigClient(
   }
 );
 
-await myStatsigClient.initializeAsync();
 
-myStatsigClient.logEvent("add_to_cart", "SKU_12345", {
+console.log("Is Ready?", client.loadingStatus);
+
+console.log("Is Loading?", client.isLoading);
+
+const details = await client.initializeAsync();
+console.log(details);
+const values = client.getContext().values; // AnyInitializeResponse | null
+console.log(values);
+
+client.logEvent("add_to_cart", "SKU_12345", {
   price: "9.99",
   item_name: "diet_coke_48_pack",
 });
 
-const isInExperiment = myStatsigClient.checkGate("new_feature_gate");
+const isInExperiment = client.checkGate("new_feature_gate");
 
 console.log("Is user in experiment?", isInExperiment);
 
-await myStatsigClient.flush(); // optional, but will send events immediately
+console.log("Is Ready?", client.loadingStatus);
 
-myStatsigClient.getContext();
+console.log("Is Loading?", client.isLoading);
+
+await client.flush(); // optional, but will send events immediately
+client.getContext();
 
 // Exit the application
 process.exit(0);

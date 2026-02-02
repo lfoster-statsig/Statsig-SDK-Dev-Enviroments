@@ -1,6 +1,6 @@
 import os
 import getpass
-from statsig_python_core import Statsig, StatsigUser, StatsigOptions, ExperimentEvaluationOptions, PersistentStorage
+from statsig_python_core import Statsig, StatsigOptions, StatsigUser
 from dotenv import load_dotenv
 
 
@@ -31,6 +31,10 @@ statsig.initialize().wait()
 gate = statsig.get_feature_gate(statsigUser, "test_gate")
 print(gate.details.reason)
 # print(feature_gate)
+
+experiment = statsig.get_experiment(statsigUser, "test_experiment")
+print(experiment.details.reason)
+print(experiment.isActive)
 
 # print(f"Feature Gate: {feature_gate}")
 

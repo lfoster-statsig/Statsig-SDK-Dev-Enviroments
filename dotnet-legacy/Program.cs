@@ -7,26 +7,34 @@ public class Program
     {
         DotNetEnv.Env.Load("../.env"); // Loads variables from .env file in parent directory
         string serverKey = Environment.GetEnvironmentVariable("SERVER_KEY")!;
+        var options = new StatsigOptions
+        {
+            DisableNetwork = true,
+        };
         // var statsig = new Statsig.Statsig(serverKey!, options);
 
         var user = new StatsigUser { UserID = Environment.UserName, Email = "lfoster@statsig.com" };
 
-        for(int i = 0; i < 1000; i++)
-        {
-            await StatsigServer.Initialize(
-            serverKey,
-                // optionally customize the SDKs configuration via StatsigOptions
-                new StatsigOptions(
-                    environment: new StatsigEnvironment(EnvironmentTier.Production)
-                )
-            );
-        }
+        // for(int i = 0; i < 1000; i++)
+        // {
+        //     await StatsigServer.Initialize(
+        //     serverKey,
+        //         // optionally customize the SDKs configuration via StatsigOptions
+        //         new StatsigOptions(
+        //             environment: new StatsigEnvironment(EnvironmentTier.Production)
+        //         )
+        //     );
+        // }
 
         StatsigServer.LogEvent(user, "add_to_cart", "SKU_12345", 
         new Dictionary<string, string> {
             { "price", "9.99" },
             { "item_name", "diet_coke_48_pack" }
         });
+
+        StatsigServer.GetClientInitializeResponse(user, includeLocalOverrides: true);
+
+
 
         // await statsig.Initialize();
 

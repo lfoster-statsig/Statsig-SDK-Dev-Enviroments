@@ -2,8 +2,11 @@ import "./App.css";
 
 import {
   StatsigProvider,
+  getDynamicConfig,
+  getExperiment,
+  updateUserAsync,
   useStatsigClient,
-  useStatsigUser,
+  useStatsigUser
 } from "@statsig/react-bindings";
 
 import React from 'react';
@@ -11,7 +14,6 @@ import logo from "./logo.svg";
 
 function AppContent() {
   const client = useStatsigClient();
-  const { updateUserAsync } = useStatsigUser();
   const [userId, setUserId] = React.useState("loganfoster");
 
   const handleUserIdChange = async (e) => {
@@ -19,6 +21,8 @@ function AppContent() {
     setUserId(newUserId);
     await updateUserAsync({ userID: newUserId });
   };
+
+  const config = client.getDynamicConfig("my_config");
 
   return (
     <div className="App">
@@ -34,8 +38,18 @@ function AppContent() {
           />
         </div>
         <div>
+          
           Gate is {client.checkGate("new_feature_gate") ? "passing" : "failing"}
+          {/* Gate is {client.checkGate("external_billing_ml_targeting_enabled") ? "passing" : "failing"} */}
           .
+
+          Is Loading is {client.isLoading ? "true" : "false"}.
+        </div>
+
+        <div>
+            {/* <p>Group: {getExperiment('my_experiment').groupName}</p>
+            <p>Group: {getExperiment('my_experiment').value}</p>
+            <p>Value: {getExperiment('my_experiment').get('a_value', 'fallback_value')}</p> */}
         </div>
         
         <a
@@ -54,12 +68,15 @@ function AppContent() {
 function App() {
   return (
     <StatsigProvider
-      sdkKey={process.env.REACT_APP_CLIENT_KEY}
-      user={{ userID: "loganfoster" }}
+    // sdkKey='client-4hzWqDH0Cfxo5NxvXEZbhB2TbCLGgy2gIqIZ4J3aAlQ'
+    // user= {{ userID: '0003f1fb-efb7-4a34-a843-140235ef0ff5' }}
+    sdkKey={process.env.REACT_APP_CLIENT_KEY}
+    user={{ userID: "loganfoster"}}
       options={{
         networkConfig: { initializeHashAlgorithm: "none" },
-        environment: { tier: "development" },
+        environment: { tier: "production" },
         timeoutMS: 10000,
+        initializeHashAlgorithm: "none",
       }}
     >
       <AppContent />
