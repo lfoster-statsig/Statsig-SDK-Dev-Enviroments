@@ -19,7 +19,7 @@ function AppContent() {
   const handleUserIdChange = async (e) => {
     const newUserId = e.target.value;
     setUserId(newUserId);
-    await updateUserAsync({ userID: newUserId });
+    await client.updateUserAsync({ userID: newUserId });
   };
 
   const config = client.getDynamicConfig("my_config");
@@ -38,7 +38,7 @@ function AppContent() {
           />
         </div>
         <div>
-          
+
           Gate is {client.checkGate("new_feature_gate") ? "passing" : "failing"}
           {/* Gate is {client.checkGate("external_billing_ml_targeting_enabled") ? "passing" : "failing"} */}
           .
@@ -47,11 +47,11 @@ function AppContent() {
         </div>
 
         <div>
-            {/* <p>Group: {getExperiment('my_experiment').groupName}</p>
+          {/* <p>Group: {getExperiment('my_experiment').groupName}</p>
             <p>Group: {getExperiment('my_experiment').value}</p>
             <p>Value: {getExperiment('my_experiment').get('a_value', 'fallback_value')}</p> */}
         </div>
-        
+
         <a
           className="App-link"
           href="https://reactjs.org"
@@ -66,12 +66,16 @@ function AppContent() {
 }
 
 function App() {
+  const sdkKey =
+    process.env.REACT_APP_CLIENT_KEY ??
+    "client-XpEEbk5TQLmLwS23iCauMQUZZkhtnoSiwB4I5WxJma8";
+
   return (
     <StatsigProvider
-    // sdkKey='client-4hzWqDH0Cfxo5NxvXEZbhB2TbCLGgy2gIqIZ4J3aAlQ'
-    // user= {{ userID: '0003f1fb-efb7-4a34-a843-140235ef0ff5' }}
-    sdkKey={process.env.REACT_APP_CLIENT_KEY}
-    user={{ userID: "loganfoster"}}
+      // sdkKey='client-4hzWqDH0Cfxo5NxvXEZbhB2TbCLGgy2gIqIZ4J3aAlQ'
+      // user= {{ userID: '0003f1fb-efb7-4a34-a843-140235ef0ff5' }}
+      sdkKey={sdkKey}
+      user={{ userID: "loganfoster" }}
       options={{
         networkConfig: { initializeHashAlgorithm: "none" },
         environment: { tier: "production" },

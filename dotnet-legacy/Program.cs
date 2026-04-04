@@ -1,48 +1,44 @@
 ﻿using Statsig;
 using Statsig.Server;
+using Newtonsoft.Json.Linq;
 
 public class Program
 {
+    private static readonly string[] TestingArray = ["tests", "hehe"];
+
     public static async Task Main(string[] args)
     {
         DotNetEnv.Env.Load("../.env"); // Loads variables from .env file in parent directory
         string serverKey = Environment.GetEnvironmentVariable("SERVER_KEY")!;
         var options = new StatsigOptions
         {
-            DisableNetwork = true,
+            // DisableNetwork = true,
         };
-        // var statsig = new Statsig.Statsig(serverKey!, options);
 
-        var user = new StatsigUser { UserID = Environment.UserName, Email = "lfoster@statsig.com" };
+        await StatsigServer.Initialize(serverKey, options);
 
-        // for(int i = 0; i < 1000; i++)
-        // {
-        //     await StatsigServer.Initialize(
-        //     serverKey,
-        //         // optionally customize the SDKs configuration via StatsigOptions
-        //         new StatsigOptions(
-        //             environment: new StatsigEnvironment(EnvironmentTier.Production)
-        //         )
-        //     );
-        // }
+        var user = new StatsigUser
+        {
+            UserID = "loganfoster",
+            Email = "lfoster@statsig.com"
+        };
+        user.AddCustomProperty("testing", JArray.FromObject(new[] { "tests", "hehe" }));
 
-        StatsigServer.LogEvent(user, "add_to_cart", "SKU_12345", 
-        new Dictionary<string, string> {
-            { "price", "9.99" },
-            { "item_name", "diet_coke_48_pack" }
-        });
+        // StatsigServer.LogEvent(user, "add_to_cart", "SKU_12345",
+        // new Dictionary<string, string> {
+        //     { "price", "9.99" },
+        //     { "item_name", "diet_coke_48_pack" }
+        // });
 
-        StatsigServer.GetClientInitializeResponse(user, includeLocalOverrides: true);
+        // StatsigServer.GetClientInitializeResponse(user, includeLocalOverrides: true);
 
 
+        // Test against a known gate that has an array value. If it contains tests it should pass
+        bool check = StatsigServer.CheckGateSync(user, "go-core-array-test");
 
-        // await statsig.Initialize();
+        Console.WriteLine($"Gate check: {check}");
 
-        // var user = new StatsigUserBuilder()
-        //     .SetUserID(Environment.UserName)
-        //     .Build();
-
-        // var gateValue = statsig.CheckGate(user, "new_feature_gate");
+        // var gateValue = StatsigServer.CheckGate(user, "new_feature_gate");
         // string wasFeatureUsed = "";
         // if (gateValue)
         // {
@@ -60,13 +56,89 @@ public class Program
 
         // statsig.LogEvent(user, wasFeatureUsed);
 
-        // await statsig.FlushEvents();
-
-        // await statsig.Shutdown();
-
-        // statsig.Dispose();
-
         await StatsigServer.Shutdown();
 
+        var array = new[] { "testing", "tests", "ttttttt" };
+
+
+        var target = new[] { "ttttttt" };
+
+        Console.WriteLine(ArrayContainsAny(array, target));
+        Console.WriteLine(ArrayContainsAll(array, target));
+
     }
+
+    internal static bool ArrayContainsAny(object[] array, object[] value)
+    {
+        foreach (var val in array)
+        {
+            if (MatchStringInArray(value, val, true, (s1, s2) => s1 == s2))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    internal static bool ArrayContainsAll(object[] array, object[] value)
+    {
+        foreach (var val in array)
+        {
+            if (!MatchStringInArray(value, val, true, (s1, s2) => s1 == s2))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // Return true if the array contains the value, using case-insensitive comparison for strings
+    internal static bool MatchStringInArray(object[] array, object? value, bool ignoreCase,
+        Func<string, string, bool> func)
+    {
+        if (value == null)
+        {
+            return false;
+        }
+
+        var valueStr = value.ToString();
+        if (value.GetType().IsArray)
+        {
+            valueStr = string.Join(",", (object[])value);
+        }
+        else if (value is IEnumerable<object> enumerable)
+        {
+            valueStr = string.Join(",", enumerable);
+        }
+
+        try
+        {
+            foreach (var t in array)
+            {
+                if (t == null)
+                {
+                    continue;
+                }
+
+                if (ignoreCase && func(valueStr!.ToLowerInvariant(), t.ToString()!.ToLowerInvariant()))
+                {
+                    return true;
+                }
+
+                if (func(valueStr!, t.ToString()!))
+                {
+                    return true;
+                }
+            }
+        }
+        catch
+        {
+            // User error, return false if we cannot toString() the values for this string operators.
+        }
+
+        return false;
+    }
+
 }

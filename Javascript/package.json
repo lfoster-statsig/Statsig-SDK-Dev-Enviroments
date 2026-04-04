@@ -11,9 +11,9 @@
   "author": "Logan Foster",
   "license": "ISC",
   "dependencies": {
-    "@statsig/js-client": "^3.24.4",
-    "@statsig/session-replay": "^3.24.4",
-    "@statsig/web-analytics": "^3.24.4",
+    "@statsig/js-client": "^3.20.2",
+    "@statsig/session-replay": "^3.20.2",
+    "@statsig/web-analytics": "^3.20.2",
     "dotenv": "^17.2.2"
   }
 }

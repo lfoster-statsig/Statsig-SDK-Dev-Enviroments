@@ -14,10 +14,12 @@ dotenv.config({ path: "../.env" });
 // );
 
 var client = new StatsigClient(
-  process.env.CLIENT_KEY,
-  { userID: "user-id" },
+  // process.env.CLIENT_KEY,
+  'client-d7pXWYu0nMC4ChtHELokCxW2Uy50vm1fBnueMQaSBqC',
+  { userID: "STATSIG_USER_TEST" },
   {
     networkConfig: { initializeHashAlgorithm: "none" },
+    environment: "development",
   }
 );
 
@@ -31,21 +33,34 @@ console.log(details);
 const values = client.getContext().values; // AnyInitializeResponse | null
 console.log(values);
 
-client.logEvent("add_to_cart", "SKU_12345", {
-  price: "9.99",
-  item_name: "diet_coke_48_pack",
+// client.logEvent("add_to_cart", "SKU_12345", {
+//   price: "9.99",
+//   item_name: "diet_coke_48_pack",
+// });
+
+client.logEvent("STATSIG_TESTING", "STATSIG_TESTING", {
+  isCustomEvent: true,
 });
 
-const isInExperiment = client.checkGate("new_feature_gate");
+// const isInExperiment = client.checkGate("test_gate");
 
-console.log("Is user in experiment?", isInExperiment);
+// let config = client.getDynamicConfig("test_config");
+// console.log("Config value:", config.get("confirmation"));
+
+// let exp = client.getExperiment("logexperimenttest", { disableExposureLogging: true });
+
+// console.log("Is user in experiment?", isInExperiment);
 
 console.log("Is Ready?", client.loadingStatus);
 
 console.log("Is Loading?", client.isLoading);
 
+console.log("Is Success?", client.isSuccess);
+
 await client.flush(); // optional, but will send events immediately
 client.getContext();
+
+client.shutdown();
 
 // Exit the application
 process.exit(0);

@@ -45,6 +45,8 @@ public class App {
 
             System.out.println("Statsig shutdown complete");
 
+            statsig.OverrideParamStore("", "");
+
             return true;
         }
         catch (Exception e)

@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.statsig:javacore:0.8.4:uber' // Uber JAR with all native libraries
+    implementation 'com.statsig:javacore:0.15.1:uber' // Uber JAR with all native libraries
 
     // Use JUnit test framework.
     testImplementation libs.junit

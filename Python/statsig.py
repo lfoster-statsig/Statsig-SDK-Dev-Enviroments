@@ -4,7 +4,7 @@ from statsig_python_core import Statsig, StatsigOptions, StatsigUser
 from dotenv import load_dotenv
 
 
-# TODO FIX THIS 
+# TODO FIX THIS
 # options = StatsigOptions(persistent_storage = MyPersistentStorage())
 # statsig = Statsig.initialize(options).wait
 # user = StatsigUser("a-user")
@@ -32,6 +32,12 @@ gate = statsig.get_feature_gate(statsigUser, "test_gate")
 print(gate.details.reason)
 # print(feature_gate)
 
+evalDetails = statsig.get_dynamic_config(
+    statsigUser, "test_config"
+).get_evaluation_details()
+
+print(evalDetails)
+
 experiment = statsig.get_experiment(statsigUser, "test_experiment")
 print(experiment.details.reason)
 print(experiment.isActive)
@@ -39,12 +45,12 @@ print(experiment.isActive)
 # print(f"Feature Gate: {feature_gate}")
 
 gatePass = statsig.check_gate(statsigUser, "test_gate")
-if(gatePass):
+if gatePass:
     print("The new feature is enabled!")
 else:
     print("The new feature is disabled.")
 
-statsig.log_event( 
+statsig.log_event(
     user=statsigUser,
     event_name="check_gate_passed",
     value=gatePass,

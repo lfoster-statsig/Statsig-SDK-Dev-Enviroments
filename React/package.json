@@ -14,7 +14,10 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "sync-sidecar-local": "node scripts/sync-sidecar-local.js",
+    "prestart": "npm run sync-sidecar-local",
     "start": "react-scripts start",
+    "prebuild": "npm run sync-sidecar-local",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

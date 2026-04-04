@@ -10,6 +10,7 @@
 
 # production
 /build
+/public/sidecar-v2-local.js
 
 # misc
 .DS_Store
